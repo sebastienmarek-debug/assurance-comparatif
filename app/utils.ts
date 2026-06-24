@@ -45,7 +45,11 @@ export function formatEuro(value: number): string {
 
 export function formatReduction(contract: Contract): string {
   if (contract.reductionType === "percent") return `${contract.reductionValue}%`;
-  if (contract.reductionType === "months") return `${contract.reductionValue} mois offerts`;
+  if (contract.reductionType === "months") {
+    const monthlyValue = contract.proposedAnnualPremium / 12;
+    const saving = monthlyValue * contract.reductionValue;
+    return `${contract.reductionValue} mois offerts par ${contract.proposedInsurer || "l'assureur"} (${formatEuro(saving)})`;
+  }
   if (contract.reductionType === "fixed") return `${formatEuro(contract.reductionValue)} de remise`;
   return "";
 }

@@ -2,11 +2,13 @@ export type ReductionType = "percent" | "months" | "fixed";
 
 export interface Contract {
   id: string;
-  type: string; // ex: "Responsabilité Civile", "Auto", "Habitation"
+  type: string;
+  currentInsurer: string;
+  proposedInsurer: string;
   currentAnnualPremium: number;
   proposedAnnualPremium: number;
   reductionType: ReductionType;
-  reductionValue: number; // % ou nb mois ou montant €
+  reductionValue: number;
 }
 
 export interface ClientInfo {

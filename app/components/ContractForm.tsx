@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { Contract, ReductionType } from "../types";
 import { PlusCircle, Trash2 } from "lucide-react";
 
@@ -12,6 +11,8 @@ function newContract(): Contract {
   return {
     id: crypto.randomUUID(),
     type: "",
+    currentInsurer: "",
+    proposedInsurer: "",
     currentAnnualPremium: 0,
     proposedAnnualPremium: 0,
     reductionType: "percent",
@@ -29,11 +30,7 @@ export default function ContractForm({ contracts, onChange }: Props) {
   }
 
   function update(id: string, field: keyof Contract, value: string | number) {
-    onChange(
-      contracts.map((c) =>
-        c.id === id ? { ...c, [field]: value } : c
-      )
-    );
+    onChange(contracts.map((c) => (c.id === id ? { ...c, [field]: value } : c)));
   }
 
   return (
@@ -54,6 +51,7 @@ export default function ContractForm({ contracts, onChange }: Props) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Type */}
             <div className="md:col-span-2">
               <label className="block text-xs font-medium text-gray-500 mb-1">
                 Type de contrat
@@ -67,6 +65,35 @@ export default function ContractForm({ contracts, onChange }: Props) {
               />
             </div>
 
+            {/* Assureur actuel */}
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">
+                Assureur actuel
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: AXA, MAIF, Groupama…"
+                value={c.currentInsurer}
+                onChange={(e) => update(c.id, "currentInsurer", e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Assureur proposé */}
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">
+                Assureur proposé
+              </label>
+              <input
+                type="text"
+                placeholder="Ex: Allianz, MMA, April…"
+                value={c.proposedInsurer}
+                onChange={(e) => update(c.id, "proposedInsurer", e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Primes */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1">
                 Prime actuelle (€/an)
@@ -99,6 +126,7 @@ export default function ContractForm({ contracts, onChange }: Props) {
               />
             </div>
 
+            {/* Réduction */}
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1">
                 Type de réduction
@@ -128,7 +156,13 @@ export default function ContractForm({ contracts, onChange }: Props) {
                 type="number"
                 min={0}
                 step={c.reductionType === "percent" ? 0.1 : 1}
-                max={c.reductionType === "percent" ? 100 : c.reductionType === "months" ? 12 : undefined}
+                max={
+                  c.reductionType === "percent"
+                    ? 100
+                    : c.reductionType === "months"
+                    ? 12
+                    : undefined
+                }
                 value={c.reductionValue || ""}
                 onChange={(e) =>
                   update(c.id, "reductionValue", parseFloat(e.target.value) || 0)
